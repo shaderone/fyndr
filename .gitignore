@@ -1,0 +1,26 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.so
+
+# SQLite database
+*.db
+
+# Local storage folder for user files
+files/
+
+# Configs with secrets
+config.py
+data/
+
+# Environment files
+venv/
+.env
+
+# VS Code settings
+.vscode/
+
+# Mac / Linux / Windows system files
+.DS_Store
+Thumbs.db
+logbook.txt
