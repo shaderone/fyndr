@@ -17,6 +17,12 @@ MessageHandler - This class is used to handle messages sent by users. It takes a
 filters - This module provides various filters that can be used to filter messages, such as text messages, documents, photos, etc.
 ContextTypes - This module provides context types that can be used to access the bot's context, such as the bot instance, the update, and the user data."""
 
+from auto_reload import FileChangeHandler  # Importing the file change handler for auto-reloading the bot
+# This handler will monitor file changes and restart the bot automatically when changes are detected.
+
+
+from db import init_db
+
 load_dotenv()  # Load environment variables from .env file
 TOKEN = os.getenv('BOT_TOKEN')
 
@@ -25,12 +31,14 @@ TOKEN = os.getenv('BOT_TOKEN')
 # functions that are executed when a user sends a command to the bot. these functions will be called when the user sends a respective command to the bot.
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Send a message when the command /start is issued."""
-    await update.message.reply_text(f'Hello! {update.message.from_user.first_name} . How can I assist you today?')
+    await update.message.reply_text(f'Hello! {update.message.from_user.first_name} .The bot is still under construction. Please wait for the next update.  \n\n')
 
 """------------------Bot Exec------------------"""
 def main():
+    # Initialize the database
+    init_db()  
     """start the bot"""
-    print("Starting the bot...")
+    print("Reloaded main.py")
     # create the bot application
     application = ApplicationBuilder().token(TOKEN).build()
 
@@ -41,4 +49,4 @@ def main():
     application.run_polling()  # Start the bot and listen for updates
 
 if __name__ == '__main__':
-    main()  # Run the main function to start the bot
+    main() 
