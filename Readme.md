@@ -7,9 +7,9 @@ Fyndr is a Telegram bot designed to help users store and retrieve files with mea
 This is an early prototype.  
 
 ## 🛠️ Roadmap (MVP Phase)
-- [ ] Handle incoming files
-- [ ] Save files locally with metadata
-- [ ] SQLite integration for metadata storage
+- [✓] Handle incoming files
+- [✓] Save files locally with metadata
+- [✓] SQLite integration for metadata storage
 - [ ] Basic keyword search
 - [ ] Storage quota per user
 - [ ] File deletion support
