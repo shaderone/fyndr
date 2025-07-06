@@ -20,8 +20,8 @@ ContextTypes - This module provides context types that can be used to access the
 from auto_reload import FileChangeHandler  # Importing the file change handler for auto-reloading the bot
 # This handler will monitor file changes and restart the bot automatically when changes are detected.
 
-
-from db import init_db
+from storage import save_file  # Importing the save_file function to handle file storage
+from db import init_db, store_file
 
 load_dotenv()  # Load environment variables from .env file
 TOKEN = os.getenv('BOT_TOKEN')
@@ -32,6 +32,37 @@ TOKEN = os.getenv('BOT_TOKEN')
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Send a message when the command /start is issued."""
     await update.message.reply_text(f'Hello! {update.message.from_user.first_name} .The bot is still under construction. Please wait for the next update.  \n\n')
+
+"""------------------Handlers------------------"""
+
+async def handle_user_files(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """
+    Handle incoming files from users.
+    This function will be called when a user sends a file to the bot.
+    It will save the file and store its details in the database.
+    """
+
+    print("Received a file from user:", update.effective_user.id, update.effective_user.first_name)
+    user = update.effective_user
+    document = update.message.document
+
+    if not document:
+        await update.message.reply_text("Please send a valid file.")
+        return
+    
+    #get the file
+    telegram_file = await context.bot.get_file(document.file_id)
+    original_name = document.file_name
+
+    #save the file
+    storage_details = await save_file(context.bot, telegram_file, original_name, user.id)
+
+    store_file(user_id=user.id, file_name=original_name, saved_as=storage_details['saved_as'], telegram_file_id=telegram_file.file_id)
+
+    await update.message.reply_text(
+        f"File '{original_name}' saved as '{storage_details['saved_as']}'.\n"
+        f"File path: {storage_details['file_path']}", parse_mode='Markdown'
+    )
 
 """------------------Bot Exec------------------"""
 def main():
@@ -44,6 +75,7 @@ def main():
 
     # add command handlers
     application.add_handler(CommandHandler("start", start))
+    application.add_handler(MessageHandler(filters.Document.ALL, handle_user_files))
 
     print("bot running...")
     application.run_polling()  # Start the bot and listen for updates
